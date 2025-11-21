@@ -1,0 +1,50 @@
+const std = import("std");
+const fmt = import("fmt");
+const math = import("math");
+
+const Vec2 = struct {
+    x: f32,
+    y: f32
+};
+
+const AABB = struct {
+    min: Vec2, // minimum bounds
+    max: Vec2, // maximum bounds
+
+	// static methods do not take in struct instances as first parameter
+    fn default(): AABB {
+        return AABB{
+            .min = Vec2{ 0.0, 0.0 },
+            .max = Vec2{  }
+        };
+    },
+
+	// instance methods take an instance of the struct as the first parameter
+	fn extend(self: mut &AABB, other: &AABB): void {
+		self.min.x = math.min(self.min.x, other.min.x);
+		self.min.y = math.min(self.min.y, other.min.y);
+		self.max.x = math.max(self.min.x, other.min.x);
+		self.max.y = math.max(self.min.y, other.min.y);
+	}
+
+};
+
+fn testIntersection(a: mutr &AABB, b: &AABB): bool {
+    return (a.min.x <= b.max.x && a.max.x >= b.min.x)
+			&& (a.min.y <= b.max.y && a.max.y >= b.min.y);
+}
+
+export fn main(argv: []str): void {
+    let a1 = AABB();    // Type is inferred. a1 is initialized.
+    let a2: AABB;       // Type is explicitly specified. a2 is not initialized.
+
+    let res = testIntersection(a1, a2); // Compilation error: a2 was not initialized.
+
+	fmt.print(std.io.out, "Hello, World\n");
+
+	// This  won't compile
+	var str = "Hello,
+	Jynx!!"
+
+    return;
+}

@@ -1,0 +1,39 @@
+(* Grammar for Jynx programming language *)
+
+(* a program is a sequence of statements *)
+<program> ::= <statement> { <statement> }
+
+(* a statement is an expression followed by a semicolon *)
+<statement> ::= <expression> ";" | <funcdef>
+
+(* a function definition is a function prototype optionally preceded with a qualifier and
+   followed by the function statements enclosed within curly braces *)
+<funcdef> ::= [ <qualifier> ] <funcproto> "{" <statement> { statement } "}"
+
+(* a function prototype starts with "fn" and the function name followed by a comma separated sequence
+   of parameters enclosed within parenthesis and optionally followed by the return type preceded by colon *)
+<funcproto> ::= "fn" <identifier> "(" [ <paramdef> "," { <paramdef> } ] ")" [ ":" <typespec> ]
+
+(* a function parameter is an identifier with its associated type separated by a colon *)
+<paramdef> ::= <identifier> ":" <typespec>
+
+(* a typespec is an identifier following optional "mut" for mutable and/or "&" for reference *)
+<typespec> ::= ["mut"] ["&"] <identifier>
+
+(* an expression *)
+<expression> ::= <assigment> | <arithmetic> | 
+
+(* a numeric literal is either an integer literal or a floating point literal *)
+<numeric> ::= <integer> | <floating>
+
+(* a floating point literal is a sequence of digits with a dot separating the decimal and fractional parts *)
+<floating> ::= <digit> { <digit> } "." { <digit> } | "." <digit> { <digit> }
+
+(* an integer literal is a sequence of decimal digits or hexadecimal digits preceded with "0x" *)
+<integer> ::= <digit> { <digit> } | "0x" <hexdigit> { <hexdigit> }
+
+(* a hexadecimal digit is a single character between 0 to 9 or a to f *)
+<hexdigit> ::= <digit> | [a-f] | [A-F]
+
+(* a digit is a single character between 0 to 9 *)
+<digit> ::= [0-9]
